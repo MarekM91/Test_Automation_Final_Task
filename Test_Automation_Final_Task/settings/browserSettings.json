@@ -1,0 +1,5 @@
+{
+  "Edge": "EdgeDriver",
+  "Firefox": "FirefoxDriver",
+  "Chrome": "ChromeDriver"
+}
