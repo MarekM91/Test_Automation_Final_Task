@@ -4,12 +4,13 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Edge;
 using Test_Automation_Final_Task.Pages;
 using Newtonsoft.Json;
-using System.IO;
+using log4net;
 
 namespace Test_Automation_Final_Task
 {
     public class Tests
     {
+        private static readonly ILog log = Logger.Log;
         private IWebDriver driver;
         private readonly Dictionary<string, string> browserSettings;
 
@@ -46,11 +47,13 @@ namespace Test_Automation_Final_Task
 
         public void Setup(string browserName)
         {
+            log.Info($"Setting up driver for browser: {browserName}");
             driver = CreateDriver(browserName);
         }
 
-        private void AssertErrorMessage(string actual, string expected)
+        private static void AssertErrorMessage(string actual, string expected)
         {
+            log.Debug($"Running assertion for error message {actual}");
             Assert.That(actual, Is.EqualTo(expected), "Error message does not match.");
         }
 
@@ -58,6 +61,7 @@ namespace Test_Automation_Final_Task
         [TestCaseSource(nameof(GetBrowsersFromJson))]
         public void TestLoginFormWithEmptyCredentials(string browserName)
         {
+            log.Info($"Running test Login form with empty credentials in {browserName}");
             Setup(browserName);
 
             var loginPage = new LoginPage(driver);
@@ -73,9 +77,10 @@ namespace Test_Automation_Final_Task
         [TestCaseSource(nameof(GetBrowsersFromJson))]
         public void TestLoginFormWithUsernameNoPassword(string browserName)
         {
+            log.Info($"Running test Login form with username and no password in {browserName}");
             Setup(browserName);
 
-            var loginPage = new LoginPageUsername(driver);
+            var loginPage = new LoginPage(driver);
             loginPage.Open().Login("standard_user");
 
             string actualErrorMessage = driver.FindElement(By.CssSelector("h3[data-test='error']")).Text;
@@ -88,6 +93,7 @@ namespace Test_Automation_Final_Task
         [TestCaseSource(nameof(GetBrowsersFromJson))]
         public void TestLoginFormWithCredentials(string browserName)
         {
+            log.Info($"Running test Login form with credentials in {browserName}");
             Setup(browserName);
 
             var loginPage = new LoginPage(driver);
@@ -102,6 +108,7 @@ namespace Test_Automation_Final_Task
         [TearDown]
         public void CloseBrowser()
         {
+            log.Info("Closing browser.");
             driver?.Quit();
             driver?.Dispose();
         }

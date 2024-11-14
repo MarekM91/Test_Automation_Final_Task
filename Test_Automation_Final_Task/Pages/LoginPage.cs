@@ -1,9 +1,11 @@
 ﻿using OpenQA.Selenium;
+using log4net;
 
 namespace Test_Automation_Final_Task.Pages
 {
     internal class LoginPage
     {
+        private static readonly ILog log = Logger.Log;
         private static string Url { get; } = "https://www.saucedemo.com/";
         readonly IWebDriver driver;
 
@@ -11,6 +13,7 @@ namespace Test_Automation_Final_Task.Pages
 
         public LoginPage Open()
         {
+            log.Info("Opening Login Page.");
             driver.Url = Url;
             return this;
         }
@@ -22,6 +25,7 @@ namespace Test_Automation_Final_Task.Pages
             usernameField.Clear();
             if (!string.IsNullOrEmpty(username))
             {
+                log.Debug($"Entering username: {username}");
                 usernameField.SendKeys(username);
             }
 
@@ -30,11 +34,13 @@ namespace Test_Automation_Final_Task.Pages
             passwordField.Clear();
             if (!string.IsNullOrEmpty(password))
             {
+                log.Debug($"Entering password: {password}");
                 passwordField.SendKeys(password);
             }
 
             // Click Login button
             var loginButton = driver.FindElement(By.Id("login-button"));
+            log.Info("Clicking Login button.");
             loginButton.Click();
         }
     }
