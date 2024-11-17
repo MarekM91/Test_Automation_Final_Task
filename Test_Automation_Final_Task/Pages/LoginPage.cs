@@ -78,13 +78,11 @@ namespace Test_Automation_Final_Task.Pages
 
             if (!string.IsNullOrEmpty(username))
             {
-                ClearUsername();
                 TypeInUsername(username);
             }
 
             if (!string.IsNullOrEmpty(password))
             {
-                ClearPassword();
                 TypeInPassword(password);
             }
 
