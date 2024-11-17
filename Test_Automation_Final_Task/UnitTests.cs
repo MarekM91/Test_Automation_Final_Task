@@ -5,6 +5,7 @@ using OpenQA.Selenium.Edge;
 using Test_Automation_Final_Task.Pages;
 using Newtonsoft.Json;
 using log4net;
+using OpenQA.Selenium.Support.UI;
 
 namespace Test_Automation_Final_Task
 {
@@ -49,11 +50,13 @@ namespace Test_Automation_Final_Task
         {
             log.Info($"Setting up driver for browser: {browserName}");
             driver = CreateDriver(browserName);
+            driver.Manage().Cookies.DeleteAllCookies();
+            driver.Manage().Window.Maximize();
         }
 
         private static void AssertErrorMessage(string actual, string expected)
         {
-            log.Debug($"Running assertion for error message {actual}");
+            log.Debug($"Running assertion for error message, actual: {actual}, expected: {expected}");
             Assert.That(actual, Is.EqualTo(expected), "Error message does not match.");
         }
 
@@ -65,7 +68,18 @@ namespace Test_Automation_Final_Task
             Setup(browserName);
 
             var loginPage = new LoginPage(driver);
-            loginPage.Open().Login();
+            loginPage.Open();
+
+            // Type any credentials into "Username" and "Password" fields
+            loginPage.TypeInUsername("test_user");
+            loginPage.TypeInPassword("test_password");
+
+            // Clear the inputs
+            loginPage.ClearUsername();
+            loginPage.ClearPassword();
+
+            // Click login button
+            loginPage.ClickLoginButton();
 
             string actualErrorMessage = driver.FindElement(By.CssSelector("h3[data-test='error']")).Text;
             string expectedErrorMessage = "Epic sadface: Username is required";
@@ -81,7 +95,19 @@ namespace Test_Automation_Final_Task
             Setup(browserName);
 
             var loginPage = new LoginPage(driver);
-            loginPage.Open().Login("standard_user");
+            loginPage.Open();
+
+            // Type any credentials in username
+            loginPage.TypeInUsername("test_user");
+
+            // Enter password
+            loginPage.TypeInPassword("secret_sauce");
+
+            // Clear the "Password" input
+            loginPage.ClearPassword();
+
+            // Click login button
+            loginPage.ClickLoginButton();
 
             string actualErrorMessage = driver.FindElement(By.CssSelector("h3[data-test='error']")).Text;
             string expectedErrorMessage = "Epic sadface: Password is required";
@@ -97,6 +123,8 @@ namespace Test_Automation_Final_Task
             Setup(browserName);
 
             var loginPage = new LoginPage(driver);
+
+            // Enter Username and Password and Login
             loginPage.Open().Login("standard_user", "secret_sauce");
 
             string actualLogoMessage = driver.FindElement(By.ClassName("app_logo")).Text;
